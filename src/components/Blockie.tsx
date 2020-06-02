@@ -1,3 +1,4 @@
+/* tslint: disable */
 import * as React from "react";
 import styled from "styled-components";
 
@@ -30,7 +31,7 @@ const Blockie = (props: IBlockieProps) => {
     })
     .toDataURL();
   return (
-    <SBlockieWrapper size={props.size} {...props}>
+    <SBlockieWrapper {...props} size={props.size}>
       <img src={imgUrl} alt={props.address} />
     </SBlockieWrapper>
   );

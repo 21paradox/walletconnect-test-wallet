@@ -18,6 +18,22 @@ export const SUPPORTED_CHAINS: IChainData[] = [
     },
   },
   {
+    name: "Cfx pontus",
+    short_name: "Cfx pontus",
+    chain: "Cfx pontus",
+    network: "conflux_pontus",
+    chain_id: 111,
+    network_id: 1,
+    rpc_url: "http://wallet-mainnet-jsonrpc.conflux-chain.org:12537",
+    native_currency: {
+      symbol: "Cfx",
+      name: "Cfx",
+      decimals: "18",
+      contractAddress: "",
+      balance: "",
+    },
+  },
+  {
     name: "Ethereum Ropsten",
     short_name: "rop",
     chain: "ETH",

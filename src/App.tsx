@@ -171,7 +171,7 @@ class App extends React.Component<{}> {
     const session = getCachedSession();
 
     if (!session) {
-      await getAppControllers().wallet.init(activeIndex, chainId);
+     await getAppControllers().wallet.init(activeIndex, chainId);
     } else {
       const connector = new WalletConnect({ session });
 

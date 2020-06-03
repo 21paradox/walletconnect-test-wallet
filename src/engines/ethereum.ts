@@ -12,7 +12,8 @@ export function filterEthereumRequests(payload: any) {
     payload.method.startsWith("net_") ||
     payload.method.startsWith("shh_") ||
     payload.method.startsWith("personal_") ||
-    payload.method.startsWith("wallet_")
+    payload.method.startsWith("wallet_") ||
+    payload.method.startsWith("cfx_")
   );
 }
 
@@ -21,7 +22,14 @@ export async function routeEthereumRequests(payload: any, state: IAppState, setS
     return;
   }
   const { chainId, connector } = state;
-  if (!signingMethods.includes(payload.method)) {
+
+  if (payload.method.match(/^cfx_.+/)) {
+    const requests = state.requests;
+    requests.push(payload);
+    console.log({requests})
+    await setState({ requests });
+
+  } else if (!signingMethods.includes(payload.method)) {
     try {
       const result = await apiGetCustomRequest(chainId, payload);
       connector.approveRequest({
@@ -97,7 +105,7 @@ export function renderEthereumRequests(payload: any): IRequestRenderParams[] {
         ...params,
         {
           label: "params",
-          value: JSON.stringify(payload.params, null, "\t"),
+          value: JSON.stringify(payload.params, null, 4),
         },
       ];
       break;
@@ -157,7 +165,14 @@ export async function signEthereumRequests(payload: any, state: IAppState, setSt
           errorMsg = "Address requested does not match active account";
         }
         break;
-      default:
+      default: {
+        if (payload.method.match(/^cfx_/)) {
+          const cfxAccount = await getAppControllers().wallet.wallet.cfxAccount;
+          const tx = cfxAccount.signTransaction(payload.params[0]);
+          console.log({ tx })
+          result = tx.serialize();
+        }
+      }
         break;
     }
 

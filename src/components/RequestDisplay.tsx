@@ -13,6 +13,9 @@ const SRequestValues = styled.div`
   word-break: break-word;
   border-radius: 8px;
   margin-bottom: 10px;
+  pre {
+    white-space: pre-wrap;
+  }
 `;
 
 const SConnectedPeer = styled.div`
@@ -53,7 +56,11 @@ class RequestDisplay extends React.Component<any, any> {
         {params.map(param => (
           <React.Fragment key={param.label}>
             <h6>{param.label}</h6>
-            <SRequestValues>{param.value}</SRequestValues>
+            <SRequestValues>
+              <pre>
+              {param.value}
+              </pre>
+            </SRequestValues>
           </React.Fragment>
         ))}
         <SActions>

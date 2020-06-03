@@ -8,12 +8,18 @@ import {
   DEFAULT_CHAIN_ID,
 } from "../constants/default";
 import { getAppConfig } from "../config";
+import * as Cfx from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js';
+
+class WalletCfx extends ethers.Wallet {
+  public cfxAccount: any;
+  public cfxAddr: string;
+}
 
 export class WalletController {
   public path: string;
   public entropy: string;
   public mnemonic: string;
-  public wallet: ethers.Wallet;
+  public wallet: WalletCfx;
 
   public activeIndex: number = DEFAULT_ACTIVE_INDEX;
   public activeChainId: number = DEFAULT_CHAIN_ID;
@@ -87,7 +93,18 @@ export class WalletController {
   }
 
   public generateWallet(index: number) {
-    this.wallet = ethers.Wallet.fromMnemonic(this.getMnemonic(), this.getPath(index));
+    // this.wallet = ethers.Wallet.fromMnemonic(this.getMnemonic(), this.getPath(index));
+    const privateKey = '6D8B0B2E3700B904B3B63CF69B320E6575A06679281B62F1DF7B6AD17C3828E3';
+
+    const privateKeyToAddress = Cfx.util.sign.privateKeyToAddress
+    const privateKeyBuf = Buffer.from(privateKey.toLowerCase(), 'hex')
+    const cfxAddress = privateKeyToAddress(privateKeyBuf).toString('hex');
+
+    this.wallet = new WalletCfx(privateKey);
+    this.wallet.cfxAddr = cfxAddress;
+    this.wallet.cfxAccount = new Cfx.Account(privateKeyBuf);
+
+    // console.log(this.wallet)
     return this.wallet;
   }
 
@@ -109,8 +126,10 @@ export class WalletController {
     const rpcUrl = getChainData(chainId).rpc_url;
     this.wallet = this.generateWallet(index);
     const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-    this.wallet.connect(provider);
-    return this.wallet;
+    const newWallet = new WalletCfx(this.wallet.privateKey, provider)
+    newWallet.cfxAccount = this.wallet.cfxAccount;
+    console.log(provider, 'provider', this.wallet)
+    return newWallet;
   }
 
   public async sendTransaction(transaction: any) {

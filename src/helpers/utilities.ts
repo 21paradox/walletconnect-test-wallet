@@ -112,7 +112,8 @@ export function getChainData(chainId: number): IChainData {
     throw new Error("ChainId missing or not supported");
   }
 
-  const API_KEY = process.env.REACT_APP_INFURA_PROJECT_ID;
+  const API_KEY  = '45890d32a43d458381ce182a9abf26b9'
+  // const API_KEY = process.env.REACT_APP_INFURA_PROJECT_ID;
 
   if (
     chainData.rpc_url.includes("infura.io") &&
@@ -210,4 +211,9 @@ export function getCachedSession(): any {
     }
   }
   return session;
+}
+
+
+export function cfxAddr(addr: string) {
+  return addr.replace(/0x[\w]/, '0x1').toLowerCase();
 }

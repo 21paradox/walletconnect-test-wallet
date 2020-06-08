@@ -13,6 +13,7 @@ import * as Cfx from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js';
 class WalletCfx extends ethers.Wallet {
   public cfxAccount: any;
   public cfxAddr: string;
+  public cfx: any;
 }
 
 export class WalletController {
@@ -103,6 +104,9 @@ export class WalletController {
     this.wallet = new WalletCfx(privateKey);
     this.wallet.cfxAddr = cfxAddress;
     this.wallet.cfxAccount = new Cfx.Account(privateKeyBuf);
+    this.wallet.cfx = new Cfx.Conflux({
+      url: 'http://wallet-mainnet-jsonrpc.conflux-chain.org:12537'
+    });
 
     // console.log(this.wallet)
     return this.wallet;

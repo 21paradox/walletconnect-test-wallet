@@ -23,7 +23,31 @@ export async function routeEthereumRequests(payload: any, state: IAppState, setS
   }
   const { chainId, connector } = state;
 
-  if (payload.method.match(/^cfx_.+/)) {
+  if (payload.method === 'cfx_getTransactionByHash') {
+    const cfxWallet = await getAppControllers().wallet.wallet;
+    let looping = true;
+    const wait = (time: number) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve()
+        }, time)
+      })
+    }
+
+    while (looping) {
+      const res = await cfxWallet.cfx.getTransactionByHash(payload.params[0]);
+      console.log(res)
+      if (res && res.blockHash) {
+        looping = false;
+        connector.approveRequest({
+          id: payload.id,
+          result: res,
+        });
+      }
+      await wait(3000)
+    }
+
+  } else if (payload.method.match(/^cfx_.+/)) {
     const requests = state.requests;
     requests.push(payload);
     console.log({requests})
@@ -100,6 +124,22 @@ export function renderEthereumRequests(payload: any): IRequestRenderParams[] {
         },
       ];
       break;
+    case "cfx_sendTransaction": {
+      const pNew = [...params]
+      params = [
+        ...pNew,
+        {
+          label: "params",
+          value: JSON.stringify({
+            ...payload.params[0],
+            value: convertHexToNumber(payload.params[0].value),
+          }, null, 4),
+        },
+      ];
+      console.log(params)
+      break;
+    }
+
     default:
       params = [
         ...params,
@@ -165,6 +205,20 @@ export async function signEthereumRequests(payload: any, state: IAppState, setSt
           errorMsg = "Address requested does not match active account";
         }
         break;
+      case "cfx_sendTransaction":
+        const cfxWallet = await getAppControllers().wallet.wallet;
+        const paramNew = { ...payload.params[0], chainId: 0 }
+        if (paramNew.data === '') {
+          delete paramNew.data
+        }
+        console.log(paramNew)
+        const res = await cfxWallet.cfx.sendTransaction({
+          ...paramNew,
+          from: cfxWallet.cfxAccount,
+        });
+        result = res;
+        break;
+
       default: {
         if (payload.method.match(/^cfx_/)) {
           const cfxAccount = await getAppControllers().wallet.wallet.cfxAccount;
@@ -175,6 +229,7 @@ export async function signEthereumRequests(payload: any, state: IAppState, setSt
       }
         break;
     }
+    console.log({ result })
 
     if (result) {
       connector.approveRequest({

@@ -218,16 +218,25 @@ export async function signEthereumRequests(payload: any, state: IAppState, setSt
         });
         result = res;
         break;
-
-      default: {
-        if (payload.method.match(/^cfx_/)) {
-          const cfxAccount = await getAppControllers().wallet.wallet.cfxAccount;
-          const tx = cfxAccount.signTransaction(payload.params[0]);
-          console.log({ tx })
-          result = tx.serialize();
-        }
-      }
+      case "cfx_signTransaction":{
+        const cfxAccount = await getAppControllers().wallet.wallet.cfxAccount;
+        const tx = cfxAccount.signTransaction(payload.params[0]);
+        console.log({ tx })
+        result = tx.serialize();
         break;
+      }
+      case "cfx_sign":{
+        const cfxAccount = await getAppControllers().wallet.wallet.cfxAccount;
+        const signed = cfxAccount.signMessage(payload.params[0]);
+        result = {
+          from: signed.from,
+          signature: signed.signature
+        }
+        console.log(signed)
+        break;
+      }
+      default:
+       break;
     }
     console.log({ result })
 

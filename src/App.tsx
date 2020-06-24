@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import WalletConnect from "@walletconnect/browser";
+import WalletConnect from "cfx-walletconnect-client";
 import Button from "./components/Button";
 import Card from "./components/Card";
 import Input from "./components/Input";
@@ -333,7 +333,7 @@ class App extends React.Component<{}> {
 
   public updateSession = async (sessionParams: { chainId?: number; activeIndex?: number }) => {
     const { connector, chainId, accounts, activeIndex } = this.state;
-    const newChainId = sessionParams.chainId || chainId;
+    const newChainId = typeof sessionParams.chainId !== 'undefined' ? sessionParams.chainId : chainId;
     const newActiveIndex = sessionParams.activeIndex || activeIndex;
     const address = accounts[newActiveIndex];
     if (connector) {

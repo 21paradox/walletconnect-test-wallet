@@ -200,7 +200,7 @@ export function toWei(value: string): string {
 }
 
 export function getCachedSession(): any {
-  const local = localStorage ? localStorage.getItem("walletconnect") : null;
+  const local = localStorage ? localStorage.getItem("walletconnect-cfx") : null;
 
   let session = null;
   if (local) {
@@ -215,5 +215,5 @@ export function getCachedSession(): any {
 
 
 export function cfxAddr(addr: string) {
-  return addr.replace(/0x[\w]/, '0x1').toLowerCase();
+  return addr.toLowerCase().replace(/0x[\w]/, '0x1').toLowerCase();
 }

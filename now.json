@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api",
+      "dest": "http://wallet-mainnet-jsonrpc.conflux-chain.org:12537"
+    },
+    { "src": "/test1", "dest": "https://example.com" },
+    { "src": "/legacy", "status": 404}
+  ]
+}

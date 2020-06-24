@@ -5,6 +5,7 @@ import { apiGetCustomRequest } from "../helpers/api";
 import { convertHexToUtf8IfPossible } from "../helpers/utilities";
 import { IRequestRenderParams, IRpcEngine } from "../helpers/types";
 import { getAppControllers } from "../controllers";
+import { util as CfxUtil } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js';
 
 export function filterEthereumRequests(payload: any) {
   return (
@@ -50,7 +51,7 @@ export async function routeEthereumRequests(payload: any, state: IAppState, setS
   } else if (payload.method.match(/^cfx_.+/)) {
     const requests = state.requests;
     requests.push(payload);
-    console.log({requests})
+    console.log({ requests })
     await setState({ requests });
 
   } else if (!signingMethods.includes(payload.method)) {
@@ -88,8 +89,8 @@ export function renderEthereumRequests(payload: any): IRequestRenderParams[] {
           value: payload.params[0].gas
             ? convertHexToNumber(payload.params[0].gas)
             : payload.params[0].gasLimit
-            ? convertHexToNumber(payload.params[0].gasLimit)
-            : "",
+              ? convertHexToNumber(payload.params[0].gasLimit)
+              : "",
         },
         {
           label: "Gas Price",
@@ -132,7 +133,7 @@ export function renderEthereumRequests(payload: any): IRequestRenderParams[] {
           label: "params",
           value: JSON.stringify({
             ...payload.params[0],
-            value: convertHexToNumber(payload.params[0].value),
+            value: CfxUtil.format.bigUInt(payload.params[0].value)
           }, null, 4),
         },
       ];
@@ -218,14 +219,14 @@ export async function signEthereumRequests(payload: any, state: IAppState, setSt
         });
         result = res;
         break;
-      case "cfx_signTransaction":{
+      case "cfx_signTransaction": {
         const cfxAccount = await getAppControllers().wallet.wallet.cfxAccount;
         const tx = cfxAccount.signTransaction(payload.params[0]);
         console.log({ tx })
         result = tx.serialize();
         break;
       }
-      case "cfx_sign":{
+      case "cfx_sign": {
         const cfxAccount = await getAppControllers().wallet.wallet.cfxAccount;
         const signed = cfxAccount.signMessage(payload.params[0]);
         result = {
@@ -236,7 +237,7 @@ export async function signEthereumRequests(payload: any, state: IAppState, setSt
         break;
       }
       default:
-       break;
+        break;
     }
     console.log({ result })
 

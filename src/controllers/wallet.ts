@@ -1,5 +1,5 @@
 import * as ethers from "ethers";
-import { getChainData } from "../helpers/utilities";
+// import { getChainData } from "../helpers/utilities";
 import { setLocal, getLocal } from "../helpers/local";
 import {
   ENTROPY_KEY,
@@ -105,8 +105,8 @@ export class WalletController {
     this.wallet.cfxAddr = cfxAddress;
     this.wallet.cfxAccount = new Cfx.Account(privateKeyBuf);
     this.wallet.cfx = new Cfx.Conflux({
-      url: 'http://wallet-mainnet-jsonrpc.conflux-chain.org:12537'
-    });
+      url: window.location.origin + '/api',
+    })
 
     // console.log(this.wallet)
     return this.wallet;
@@ -127,12 +127,12 @@ export class WalletController {
   public update(index: number, chainId: number) {
     this.activeIndex = index;
     this.activeChainId = chainId;
-    const rpcUrl = getChainData(chainId).rpc_url;
+    // const rpcUrl = getChainData(chainId).rpc_url;
     this.wallet = this.generateWallet(index);
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-    const newWallet = new WalletCfx(this.wallet.privateKey, provider)
-    newWallet.cfxAccount = this.wallet.cfxAccount;
-    console.log(provider, 'provider', this.wallet)
+    // const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    const newWallet = new WalletCfx(this.wallet.privateKey)
+    // newWallet.cfxAccount = this.wallet.cfxAccount;
+    // console.log(provider, 'provider', this.wallet)
     return newWallet;
   }
 

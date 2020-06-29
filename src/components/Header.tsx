@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Blockie from "./Blockie";
-import { ellipseAddress, getChainData, cfxAddr } from "../helpers/utilities";
+import { ellipseAddress, getChainData  } from "../helpers/utilities";
 import { fonts, responsive, transitions } from "../styles";
 
 const SHeader = styled.div`
@@ -96,10 +96,6 @@ const Header = (props: IHeaderProps) => {
         <SActiveAccount>
           <SBlockie address={address} />
           <SAddress connected={connected}>{ellipseAddress(address)}</SAddress>
-          <span style={{marginTop: 50}}>
-            <span>cfx address: </span>
-            <span style={{ marginLeft: 10 }}>{cfxAddr(address)}</span>
-          </span>
           <SDisconnect connected={connected} onClick={killSession}>
             {"Disconnect"}
           </SDisconnect>

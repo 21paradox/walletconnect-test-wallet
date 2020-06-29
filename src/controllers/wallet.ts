@@ -55,7 +55,7 @@ export class WalletController {
     let wallet = null;
     for (let i = 0; i < count; i++) {
       wallet = this.generateWallet(i);
-      accounts.push(wallet.address);
+      accounts.push('0x' + wallet.cfxAddr);
     }
     return accounts;
   }

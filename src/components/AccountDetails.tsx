@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Dropdown from "../components/Dropdown";
 import { IChainData } from "../helpers/types";
-import { ellipseAddress, getViewportDimensions, cfxAddr } from "../helpers/utilities";
+import { ellipseAddress, getViewportDimensions } from "../helpers/utilities";
 import { responsive } from "../styles";
 import Blockie from "./Blockie";
 
@@ -43,7 +43,7 @@ const AccountDetails = (props: IAccountDetailsProps) => {
     windowWidth > maxWidth ? maxChar : Math.floor(windowWidth * (maxChar / maxWidth));
 
   const accountsMap = accounts.map((addr: string, index: number) => {
-    const display_address = ellipseAddress(cfxAddr(addr), ellipseLength)
+    const display_address = ellipseAddress(addr, ellipseLength)
     return {
       index,
       display_address,
